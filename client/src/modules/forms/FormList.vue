@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import FormList from "./FormList.vue";
-export { FormList };
+const props =cdefineProps({
+  list: Forms[]
+});
 </script>
 
 <template>

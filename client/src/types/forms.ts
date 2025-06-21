@@ -34,7 +34,7 @@ export interface FormField {
   step?: number; // For number
 }
 
-export interface FormResponse extends Form {
+export interface FormResponse extends Forms {
   formId: string;
 }
 
