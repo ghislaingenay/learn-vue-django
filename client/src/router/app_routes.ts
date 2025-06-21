@@ -1,9 +1,7 @@
 import routing from "@constants/router_names";
 import type { RouteRecordRaw } from "vue-router";
 
-const appRoutes: RouteRecordRaw[] = [];
-
-const routes = [
+const appRoutes: RouteRecordRaw[] = [
   {
     path: "/",
     // redirect: "/forms",

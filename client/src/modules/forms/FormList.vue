@@ -1,8 +1,4 @@
-<script setup lang="ts">
-const props =cdefineProps({
-  list: Forms[]
-});
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="form-list">
