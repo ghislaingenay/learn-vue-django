@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'users.apps.UsersConfig',
     'django_filters',
+    'django_extensions',
+    'django-cors-headers'
 ]
 
 MIDDLEWARE = [
