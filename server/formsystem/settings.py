@@ -137,6 +137,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'users.User'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -167,12 +169,11 @@ REST_FRAMEWORK = {
      'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
-     'DEFAULT_FILTER_BACKENDS': [
-        'rest_framework_json_api.filters.QueryParameterValidationFilter',
-        'rest_framework_json_api.filters.OrderingFilter',
-        'rest_framework_json_api.filters.DjangoFilterBackend',
-        'rest_framework_json_api.filters.SearchFilter',
-    ],
+    #  'DEFAULT_FILTER_BACKENDS': [
+    #     'rest_framework.filters.OrderingFilter',
+    #     'rest_framework.filters.SearchFilter',
+    #     'django_filters.rest_framework.DjangoFilterBackend',
+    # ],  deactivate to use DRF defaults settings
 }
 
 SIMPLE_JWT = {
