@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from datetime import timedelta
 
 load_dotenv()
 
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'users.apps.UsersConfig',
     'django_filters',
+    'rest_framework_simplejwt',
     'rest_framework_json_api',
     'rest_framework.authtoken',
     'django_extensions',
@@ -173,5 +175,18 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ('JWT',)
+    'AUTH_HEADER_TYPES': ('Bearer','JWT',),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=120),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=60),
+    'SIGNING_KEY': os.getenv('SIGNING_KEY'),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
 }
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'SERIALIZERS': {
+        'user_create': 'users.serializer.UserRegistrationSerializer',
+        'current_user': 'users.serializer.CurrentUserSerializer',
+    }
+    }
