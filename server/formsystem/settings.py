@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'corsheaders'
 ]
 
+#  .middlewares.py => 'your_app.middleware.RouteBasedJWTMiddleware',
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

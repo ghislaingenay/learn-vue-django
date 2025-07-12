@@ -1,7 +1,10 @@
 from rest_framework import serializers
+from djoser.serializers import UserCreateSerializer
 from .models import User
 
-class UserRegistrationSerializer(serializers.ModelSerializer):
+class UserRegistrationSerializer(UserCreateSerializer):
+    """Custom user registration serializer for Djoser"""
+
     class Meta:
         model = User
         fields = ['email', 'password', 'first_name', 'last_name'] # full_name defined as property in User model
@@ -19,6 +22,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user.save()
         return user
     
+    
+
 
 class CurrentUserSerializer(serializers.ModelSerializer):
   class Meta:
