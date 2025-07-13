@@ -1,7 +1,20 @@
 from .views import FormTemplateViewSet
-from django.urls import re_path
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+
+# Create router for this app
+router = DefaultRouter()
+
+# Register ViewSet with router
+router.register(r'templates', FormTemplateViewSet, basename='form-template')
 
 urlpatterns = [
-  # fields ID will be performed using API ViewSet
-  re_path(r'^forms/templates',FormTemplateViewSet, basename='form-template'),
+    # Include router URLs
+    path('forms/', include(router.urls)),
 ]
+
+# This creates URLs like:
+# GET/POST    /forms/templates/
+# GET/PUT/DELETE  /forms/templates/{id}/
+# POST        /forms/templates/{id}/archive/
+# POST        /forms/templates/{id}/duplicate/
