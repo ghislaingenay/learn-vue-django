@@ -22,13 +22,23 @@ class FormResponseStatus(models.TextChoices):
     ARCHIVED = 'archived', _('Archived')
     DELETED = 'deleted', _('Deleted')
     
+class FormTemplateStatus(models.TextChoices):
+    ACTIVE = 'active', _('Active')
+    INACTIVE = 'inactive', _('Inactive')
+    DELETED = 'deleted', _('Deleted')
+    
 # Create your models here.
 class FormTemplate(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
+    status = models.CharField(
+        max_length=20,
+        choices=FormTemplateStatus.choices,
+        default=FormTemplateStatus.ACTIVE,
+        verbose_name=_('Template Status')
+    )
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='form_templates')
     deleted_at = models.DateTimeField(null=True, blank=True)  # Soft delete
     can_respond = models.BooleanField(default=True)  # Whether the form can accept responses
@@ -90,6 +100,7 @@ class FormResponse(models.Model):
   created_at = models.DateTimeField(auto_now_add=True)
   archived_at = models.DateTimeField(null=True, blank=True)  # Soft delete
   deleted_at = models.DateTimeField(null=True, blank=True)  # Soft deletes
+  access_code = models.CharField(max_length=255, blank=True, null=True)  # For sharing responses and access the current link as well
   status = models.CharField(
       max_length=20,
       choices=FormResponseStatus.choices,
