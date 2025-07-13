@@ -5,8 +5,7 @@ from formsystem.utils.http_response_body import error_response
 from users.models import User
 
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework.response import Response
+
 
 class JSONAPITokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
