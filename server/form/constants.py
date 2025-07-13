@@ -44,3 +44,10 @@ class ErrorMessages:
     FORM_TEMPLATE_NOT_FOUND = _("Form template not found")
     FORM_TEMPLATE_STATUS_INVALID = _("Invalid form template status provided")
     
+    
+FORM_TEMPLATE_STATUS_CHOICES = ['active', 'archived', 'deleted']
+FORM_RESPONSE_STATUS_CHOICES = ['pending', 'completed', 'archived', 'deleted']
+FORM_FIELD_TYPE_CHOICES = [
+    'text', 'email', 'textarea', 'number', 'date',
+    'checkbox', 'radio', 'dropdown', 'file'
+]
