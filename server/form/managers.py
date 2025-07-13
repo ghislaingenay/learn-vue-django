@@ -12,6 +12,10 @@ class FormTemplateManager(models.Manager):
     def list_by_user(self, user: int):
         return self.filter(user_id=user, is_active=True, deleted_at__isnull=True).order_by('created_at')
       
+    def find_by_id_and_user(self, template_id, user: int):
+        """Find a template by ID and user, only active and not deleted"""
+        return self.filter(id=template_id, user_id=user, is_active=True, deleted_at__isnull=True).first()
+    
     def search(self, query):
         """Search in name and description"""
         if not query or not query.strip():
