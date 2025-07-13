@@ -88,6 +88,8 @@ class FormResponse(models.Model):
   responder_full_name = models.CharField(max_length=255, blank=True, null=True)
   feedback_note = models.TextField(blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add=True)
+  archived_at = models.DateTimeField(null=True, blank=True)  # Soft delete
+  deleted_at = models.DateTimeField(null=True, blank=True)  # Soft deletes
   status = models.CharField(
       max_length=20,
       choices=FormResponseStatus.choices,

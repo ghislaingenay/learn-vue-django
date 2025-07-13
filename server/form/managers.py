@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from .models import FormFieldType
+from .models import FormFieldType, FormResponseStatus
 from django.utils.translation import gettext_lazy as _
 
 
@@ -42,9 +42,27 @@ class FormResponseManager(models.Manager):
     """Find by template, only active and not deleted responses.
     Template  is linked to a specific form and user"""
     return self.filter(template=template, is_active=True, deleted_at__isnull=True)
+  
+  def find_by_user(self, user):
+      """Find all responses by user, only active and not deleted"""
+      return self.select_related('template').filter(template__user_id=user, is_active=True, status__not_in=[FormResponseStatus.DELETED, FormResponseStatus.ARCHIVED ])
 
   def get_responses_by_responder_email(self, email):
       return self.filter(responder_email=email, is_active=True, deleted_at__isnull=True)
+    
+  def archive_response(self, response):
+      """Archive a response by setting the status to ARCHIVED and updating the archived_at timestamp"""
+      response.status = FormResponseStatus.ARCHIVED
+      response.archived_at = models.DateTimeField(auto_now=True)
+      response.save(update_fields=['status', 'archived_at'])
+      return response
+    
+  def delete_response(self, response):
+      """Soft delete a response by setting the status to DELETED and updating the deleted_at timestamp"""
+      response.status = FormResponseStatus.DELETED
+      response.deleted_at = models.DateTimeField(auto_now=True)
+      response.save(update_fields=['status', 'deleted_at'])
+      return response
     
   
 
