@@ -15,8 +15,11 @@
     "baseUrl": "./",
     "paths": {
       "@components/*": ["src/components/*"],
+      "@definitions/*": ["src/definitions/*"],
       "@types": ["src/types/index.ts"],
       "@modules/*": ["src/modules/*"],
+      "@validators/*": ["src/validators/*"],
+      "@router/*": ["src/router/*"],
       "@constants/*": ["src/constants/*"],
       "@public/*": ["public/*"]
     }
