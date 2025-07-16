@@ -9,6 +9,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": false,
+    "types": ["vue3-toastify/global"],
 
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
