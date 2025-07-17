@@ -1,7 +1,98 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import type { UserLogin, VineErrorResponse } from "@types";
+import { loginValidator, loginValidatorObject } from "@validators/auth";
+import vine from "@vinejs/vine";
+import { authService } from "src/services/auth";
+import { reactive, ref } from "vue";
+
+const isLoading = ref(false);
+
+const loginDetails = reactive({
+  email: "",
+  password: "",
+});
+
+const validateLoginDetails = async () => {
+  return await vine
+    .validate({ schema: loginValidatorObject, data: loginDetails })
+    .catch((err: VineErrorResponse) => {
+      if (err.errors) {
+        err.errors.forEach((error) => {
+          if (error.field === "email") {
+            errors.email = error.message;
+          } else if (error.field === "password") {
+            errors.password = error.message;
+          }
+        });
+      }
+      return null;
+    });
+};
+
+const errors = reactive({
+  email: "",
+  password: "",
+});
+const handleLogin = async () => {
+  errors.email = "";
+  errors.password = "";
+
+  const validatedData = await validateLoginDetails();
+  isLoading.value = true;
+  if (!validatedData) return;
+
+  try {
+    // Simulate an API call
+    await authService.login(loginDetails.email, loginDetails.password);
+  } catch (error) {
+    console.error("Login failed:", error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+</script>
 <template>
-  <div>
-    <h1>Login form</h1>
-  </div>
+  <section>
+    <div class="auth-card">
+      <h1>Login form</h1>
+      <form novalidate @submit.prevent="handleLogin()">
+        <input
+          type="email"
+          name="email"
+          v-model="loginDetails.email"
+          placeholder="Email"
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          v-model.trim="loginDetails.password"
+          placeholder="Password"
+          required
+        />
+      </form>
+    </div>
+  </section>
 </template>
-<style scoped></style>
+<style scoped>
+.h1 {
+  color: #333;
+  font-size: 24px;
+  text-align: center;
+}
+
+.auth-card {
+  width: 400px;
+  height: 300px;
+  padding: 20px;
+  background-color: aliceblue;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+section {
+  display: grid;
+  place-self: center;
+  background-color: #4311cb;
+}
+</style>
