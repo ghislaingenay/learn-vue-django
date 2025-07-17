@@ -2,8 +2,9 @@
 import { defineProps } from "vue";
 import LoginForm from "./components/LoginForm.vue";
 import RegisterForm from "./components/RegisterForm.vue";
+import type { AuthMode } from "@types";
 const { mode } = defineProps<{
-  mode: "login" | "register";
+  mode: AuthMode;
 }>();
 </script>
 <template>

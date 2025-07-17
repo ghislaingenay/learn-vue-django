@@ -8,3 +8,5 @@ import type { Infer } from "@vinejs/vine/types";
 export type UserRegistration = Infer<typeof registerValidator>;
 export type UserLogin = Infer<typeof loginValidator>;
 export type ResetPassword = Infer<typeof resetPasswordValidator>;
+
+export type AuthMode = "login" | "register";

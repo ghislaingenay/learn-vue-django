@@ -78,14 +78,21 @@ const handleLogin = async () => {
     <div class="auth-card">
       <h1>Login form</h1>
       <form novalidate @submit.prevent="handleLogin()">
-        <input
+        <v-text-field
+          label="Email"
+          variant="underlined"
+          v-model="loginDetails.email"
+          @blur="validateField('email')"
+        ></v-text-field>
+
+        <!-- <input
           type="email"
           name="email"
           v-model="loginDetails.email"
           placeholder="Email"
           required
           @blur="validateField('email')"
-        />
+        /> -->
         <input
           type="password"
           name="password"
