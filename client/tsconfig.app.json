@@ -13,9 +13,10 @@
 
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
       "@components/*": ["src/components/*"],
+      "@pages/*": ["src/pages/*"],
       "@definitions/*": ["src/definitions/*"],
       "@types": ["src/types/index.ts"],
       "@modules/*": ["src/modules/*"],
