@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from .enums import FormFieldType, FormResponseStatus,FormTemplateStatus
-from server.users.models import User
+from users.models import User
 
 
 from .managers import FormResponseFieldManager, FormResponseManager, FormTemplateManager, FormTemplateFieldManager
@@ -33,7 +33,6 @@ class FormTemplate(models.Model):
         ordering = ['name']
         indexes = [
             models.Index(fields=['name'], name='form_template_name_idx'),
-            models.Index(fields=['type'], name='form_template_type_idx'),
         ]
       
 
@@ -66,7 +65,8 @@ class FormTemplateField(models.Model):
         verbose_name_plural = _('Form Template Fields')
         unique_together = ('template', 'field_name')  # Ensure no duplicate field names in the same template
         indexes = [
-            models.Index(fields=['template'], name='form_template_idx')
+            models.Index(fields=['template'], name='form_template_idx'),
+            models.Index(fields=['field_type'], name='form_template_field_type_idx')
         ]
 
 
