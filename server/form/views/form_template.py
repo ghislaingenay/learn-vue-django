@@ -1,12 +1,12 @@
 from django.shortcuts import get_object_or_404
-from server.form.enums import FormTemplateStatus
-from server.form.models import FormResponse, FormTemplate
+from form.enums import FormTemplateStatus
+from form.models import  FormTemplate
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from django.utils import timezone
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from server.form.serializers.form_template import CreateFormTemplateSerializer, DeleteFormTemplateSerializer, FormTemplateListSerializer, UpdateFormTemplateSerializer
-from server.formsystem.utils.http_response_body import success_response
+from form.serializers.form_template import CreateFormTemplateSerializer, DeleteFormTemplateSerializer, FormTemplateListSerializer, UpdateFormTemplateSerializer
+from formsystem.utils.http_response_body import success_response
 
 
 class FormTemplateViewSet(viewsets.ModelViewSet):
@@ -34,10 +34,10 @@ class FormTemplateViewSet(viewsets.ModelViewSet):
         return CreateFormTemplateSerializer
       elif self.action in ['update', 'partial_update']:
         return UpdateFormTemplateSerializer
-      elif self.action == 'destroy':
-        return DeleteFormTemplateSerializer  # Use same serializer for deletion
-      else:
-        return FormTemplateListSerializer  # For list, retrieve
+      # elif self.action == 'destroy':
+      #   return DeleteFormTemplateSerializer  # Use same serializer for deletion
+      # else:
+      return FormTemplateListSerializer  # For list, retrieve
       
     def perform_create(self, serializer):
       """
@@ -47,7 +47,7 @@ class FormTemplateViewSet(viewsets.ModelViewSet):
       serializer.save(user_id=self.request.user)
       
       
-    @action(detail=, methods=['post'])
+    @action(detail=True,methods=['post'])
     def archive(self, request, *args, **kwargs):
         """Custom action to archive a form template"""
         template_id = self.kwargs.get('pk')

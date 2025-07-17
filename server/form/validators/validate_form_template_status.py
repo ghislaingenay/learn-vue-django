@@ -1,5 +1,5 @@
 from rest_framework.serializers import ValidationError
-from server.form.constants import FORM_TEMPLATE_STATUS_CHOICES, ErrorCodes, ErrorMessages
+from form.constants import FORM_TEMPLATE_STATUS_CHOICES, ErrorCodes, ErrorMessages
 
 
 def validate_form_template_status(value, allowed_statuses=FORM_TEMPLATE_STATUS_CHOICES):
