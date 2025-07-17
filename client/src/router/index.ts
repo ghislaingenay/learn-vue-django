@@ -6,6 +6,8 @@ import {
 import guestRoutes from "./guest_routes";
 import appRoutes from "./app_routes";
 import routing from "@constants/router_names";
+import axios from "axios";
+import { Env } from "@definitions/env";
 
 const routes: RouteRecordRaw[] = [
   ...guestRoutes,
@@ -23,13 +25,9 @@ const router = createRouter({
   routes,
 });
 
-const isAuthenticated = () => {
-  // check GET auth/me later
-  return true;
-};
-
-router.beforeEach((to, _, next) => {
-  if (to.meta.requiresAuth && !isAuthenticated()) {
+router.beforeEach(async (to, _, next) => {
+  const isAuth = await isAuthenticated();
+  if (to.meta.requiresAuth && !isAuth) {
     next({ name: routing.LOGIN, replace: true });
   } else {
     next();

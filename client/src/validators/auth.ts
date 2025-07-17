@@ -8,12 +8,12 @@ export const registerValidator = vine.compile(
     lastName: vine.string().minLength(2).maxLength(50),
   })
 );
-export const loginValidator = vine.compile(
-  vine.object({
-    email: vine.string().email(),
-    password: vine.string().minLength(6),
-  })
-);
+
+export const loginValidatorObject = vine.object({
+  email: vine.string().email(),
+  password: vine.string().minLength(6),
+});
+export const loginValidator = vine.compile(loginValidatorObject);
 export const resetPasswordValidator = vine.compile(
   vine.object({
     email: vine.string().email(),
