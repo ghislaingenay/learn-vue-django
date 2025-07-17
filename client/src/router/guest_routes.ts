@@ -6,13 +6,13 @@ const guestRoutes: RouteRecordRaw[] = [
     path: "/login",
     name: routing.LOGIN,
     meta: { requiresAuth: false },
-    component: () => import("@modules/auth/index.vue"),
+    component: async () => await import("@pages/auth/login.vue"),
   },
   {
     path: "/register",
     name: routing.REGISTER,
     meta: { requiresAuth: false },
-    component: () => import("@modules/auth/index.vue"),
+    component: async () => await import("@pages/auth/register.vue"),
   },
 ];
 

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import { authService } from "@services/auth";
 import type { UserLogin, VineErrorResponse } from "@types";
-import { loginValidator, loginValidatorObject } from "@validators/auth";
+import { loginValidatorObject } from "@validators/auth";
 import vine from "@vinejs/vine";
-import { authService } from "src/services/auth";
 import { reactive, ref } from "vue";
 
 const isLoading = ref(false);
@@ -29,6 +29,28 @@ const validateLoginDetails = async () => {
     });
 };
 
+const validateField = (field: keyof UserLogin) => {
+  return vine
+    .validate({
+      schema: loginValidatorObject,
+      data: { [field]: loginDetails[field] },
+    })
+    .then(() => {
+      errors[field] = "";
+      return true;
+    })
+    .catch((err: VineErrorResponse) => {
+      if (err.errors) {
+        err.errors.forEach((error) => {
+          if (error.field === field) {
+            errors[field] = error.message;
+          }
+        });
+      }
+      return false;
+    });
+};
+
 const errors = reactive({
   email: "",
   password: "",
@@ -52,7 +74,7 @@ const handleLogin = async () => {
 };
 </script>
 <template>
-  <section>
+  <section class="">
     <div class="auth-card">
       <h1>Login form</h1>
       <form novalidate @submit.prevent="handleLogin()">
@@ -62,6 +84,7 @@ const handleLogin = async () => {
           v-model="loginDetails.email"
           placeholder="Email"
           required
+          @blur="validateField('email')"
         />
         <input
           type="password"
@@ -69,6 +92,7 @@ const handleLogin = async () => {
           v-model.trim="loginDetails.password"
           placeholder="Password"
           required
+          @blur="validateField('password')"
         />
       </form>
     </div>
