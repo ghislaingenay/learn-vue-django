@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',  
+    'djoser', 
     'users.apps.UsersConfig',
     'form.apps.FormConfig',
     'django_filters',
@@ -165,11 +167,14 @@ REST_FRAMEWORK = {
      'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
+      'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'  # ✅ Fixed: Better default for API
+    ],
      'DEFAULT_FILTER_BACKENDS': [
-        'rest_framework_json_api.filters.QueryParameterValidationFilter',
+       'rest_framework_json_api.filters.QueryParameterValidationFilter',
         'rest_framework_json_api.filters.OrderingFilter',
-        'rest_framework_json_api.filters.DjangoFilterBackend',
-        'rest_framework_json_api.filters.SearchFilter',
+        'django_filters.rest_framework.DjangoFilterBackend',  # ✅ Fixed: Correct import
+        'rest_framework.filters.SearchFilter',  # ✅ Fixed: Use standard SearchFilter
     ],
 }
 
