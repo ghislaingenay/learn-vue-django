@@ -8,14 +8,42 @@ const { mode } = defineProps<{
 }>();
 </script>
 <template>
-  <div>
-    <h1>layout logic</h1>
-    <div v-if="mode === 'login'">
-      <LoginForm />
+  <main class="bg-slate-50 w-screen h-screen overflow-hidden auth-background">
+    <div class="flex items-center justify-center w-full h-full">
+      <section class="auth-card border-2">
+        <div v-if="mode === 'login'">
+          <LoginForm />
+        </div>
+        <div v-else>
+          <RegisterForm />
+        </div>
+      </section>
     </div>
-    <div v-else>
-      <RegisterForm />
-    </div>
-  </div>
+  </main>
 </template>
-<style scoped></style>
+<style scoped>
+.auth-card {
+  width: 400px;
+  min-height: 300px;
+  padding: 20px;
+  margin: auto;
+  background-color: aliceblue;
+  border-radius: 8px;
+  opacity: 0.9;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.auth-background {
+  background: linear-gradient(
+    135deg,
+    #003f5b,
+    #2b4b7d,
+    #5f5195,
+    #98509d,
+    #cc4c91,
+    #f25375,
+    #ff6f4e,
+    #ff9913
+  );
+}
+</style>

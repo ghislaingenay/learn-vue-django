@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { authService } from "@services/auth";
-import type { UserLogin, VineErrorResponse } from "@types";
+import type { User, UserLogin, VineErrorResponse } from "@types";
 import { loginValidatorObject } from "@validators/auth";
 import vine from "@vinejs/vine";
 import { reactive, ref } from "vue";
+import { eventName } from "vuetify/lib/util/helpers.mjs";
 
 const isLoading = ref(false);
 
@@ -15,9 +16,9 @@ const loginDetails = reactive({
 const validateLoginDetails = async () => {
   return await vine
     .validate({ schema: loginValidatorObject, data: loginDetails })
-    .catch((err: VineErrorResponse) => {
-      if (err.errors) {
-        err.errors.forEach((error) => {
+    .catch((err: VineErrorResponse<UserLogin>) => {
+      if (err.messages) {
+        err.messages.forEach((error) => {
           if (error.field === "email") {
             errors.email = error.message;
           } else if (error.field === "password") {
@@ -29,8 +30,8 @@ const validateLoginDetails = async () => {
     });
 };
 
-const validateField = (field: keyof UserLogin) => {
-  return vine
+const validateField = async (field: keyof UserLogin) => {
+  return await vine
     .validate({
       schema: loginValidatorObject,
       data: { [field]: loginDetails[field] },
@@ -39,9 +40,9 @@ const validateField = (field: keyof UserLogin) => {
       errors[field] = "";
       return true;
     })
-    .catch((err: VineErrorResponse) => {
-      if (err.errors) {
-        err.errors.forEach((error) => {
+    .catch((err: VineErrorResponse<UserLogin>) => {
+      if (err.messages) {
+        err.messages.forEach((error) => {
           if (error.field === field) {
             errors[field] = error.message;
           }
@@ -60,11 +61,12 @@ const handleLogin = async () => {
   errors.password = "";
 
   const validatedData = await validateLoginDetails();
-  isLoading.value = true;
   if (!validatedData) return;
+  isLoading.value = true;
 
   try {
     // Simulate an API call
+    isLoading.value = true;
     await authService.login(loginDetails.email, loginDetails.password);
   } catch (error) {
     console.error("Login failed:", error);
@@ -74,56 +76,36 @@ const handleLogin = async () => {
 };
 </script>
 <template>
-  <section class="">
-    <div class="auth-card">
-      <h1>Login form</h1>
-      <form novalidate @submit.prevent="handleLogin()">
+  <div class="grid gap-8">
+    <h1 class="text-center pt-4">Google Form</h1>
+    <router-link
+      class="text-center underline text-blue-500 font-[0.5rem]"
+      to="/auth/register"
+    >
+      Don't have an account? Register
+    </router-link>
+    <form novalidate @submit.prevent="handleLogin()">
+      <div class="grid gap-8">
         <v-text-field
           label="Email"
           variant="underlined"
+          :error="!!errors.email"
+          :error-messages="errors.email"
           v-model="loginDetails.email"
-          @blur="validateField('email')"
+          @blur="async () => await validateField('email')"
+        ></v-text-field>
+        <v-text-field
+          label="Password"
+          variant="underlined"
+          :error="!!errors.password"
+          :error-messages="errors.password"
+          v-model="loginDetails.password"
+          @blur="async () => await validateField('password')"
         ></v-text-field>
 
-        <!-- <input
-          type="email"
-          name="email"
-          v-model="loginDetails.email"
-          placeholder="Email"
-          required
-          @blur="validateField('email')"
-        /> -->
-        <input
-          type="password"
-          name="password"
-          v-model.trim="loginDetails.password"
-          placeholder="Password"
-          required
-          @blur="validateField('password')"
-        />
-      </form>
-    </div>
-  </section>
+        <v-btn :loading="isLoading" type="submit"> Login </v-btn>
+      </div>
+    </form>
+  </div>
 </template>
-<style scoped>
-.h1 {
-  color: #333;
-  font-size: 24px;
-  text-align: center;
-}
-
-.auth-card {
-  width: 400px;
-  height: 300px;
-  padding: 20px;
-  background-color: aliceblue;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-section {
-  display: grid;
-  place-self: center;
-  background-color: #4311cb;
-}
-</style>
+<style scoped></style>
