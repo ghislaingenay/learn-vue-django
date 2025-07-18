@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { authService } from "@services/auth";
-import type { User, UserLogin, VineErrorResponse } from "@types";
+import type { UserLogin, VineErrorResponse } from "@types";
 import { loginValidatorObject } from "@validators/auth";
 import vine from "@vinejs/vine";
 import { reactive, ref } from "vue";
-import { eventName } from "vuetify/lib/util/helpers.mjs";
 
 const isLoading = ref(false);
 
