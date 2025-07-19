@@ -8,6 +8,11 @@ import { reactive, ref } from "vue";
 const isLoading = ref(false);
 
 const loginDetails = reactive({
+  email: "ghislain.gny@gmail.com",
+  password: "ilovevue",
+});
+
+const errors = reactive({
   email: "",
   password: "",
 });
@@ -18,11 +23,7 @@ const validateLoginDetails = async () => {
     .catch((err: VineErrorResponse<UserLogin>) => {
       if (err.messages) {
         err.messages.forEach((error) => {
-          if (error.field === "email") {
-            errors.email = error.message;
-          } else if (error.field === "password") {
-            errors.password = error.message;
-          }
+          errors[error.field] = error.message;
         });
       }
       return null;
@@ -35,11 +36,8 @@ const validateField = async (field: keyof UserLogin) => {
       schema: loginValidatorObject,
       data: { [field]: loginDetails[field] },
     })
-    .then(() => {
-      errors[field] = "";
-      return true;
-    })
     .catch((err: VineErrorResponse<UserLogin>) => {
+      errors[field] = "";
       if (err.messages) {
         err.messages.forEach((error) => {
           if (error.field === field) {
@@ -51,10 +49,6 @@ const validateField = async (field: keyof UserLogin) => {
     });
 };
 
-const errors = reactive({
-  email: "",
-  password: "",
-});
 const handleLogin = async () => {
   errors.email = "";
   errors.password = "";
@@ -79,7 +73,7 @@ const handleLogin = async () => {
     <h1 class="text-center pt-4">Google Form</h1>
     <router-link
       class="text-center underline text-blue-500 font-[0.5rem]"
-      to="/auth/register"
+      to="/register"
     >
       Don't have an account? Register
     </router-link>
@@ -95,6 +89,7 @@ const handleLogin = async () => {
         ></v-text-field>
         <v-text-field
           label="Password"
+          type="password"
           variant="underlined"
           :error="!!errors.password"
           :error-messages="errors.password"

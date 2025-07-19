@@ -9,21 +9,22 @@ import { jwtDecode } from "jwt-decode";
 export default class AuthService extends BaseService {
   constructor() {
     super({
-      baseUrl: "/auth",
+      baseUrl: "auth",
     });
+  }
+  private getAccessToken() {
+    const accessToken = localStorage.getItem("access_token");
+    if (!accessToken) return null;
+    return accessToken;
   }
 
   async isAuthenticated(): Promise<boolean> {
     await this.requestNewAccessToken(); // Ensure token is refreshed if needed
-    const accessToken = localStorage.getItem("access_token");
-    if (!accessToken) return false;
+    const accessToken = this.getAccessToken();
+    if (accessToken === null) return false;
 
     try {
-      const response = await axios.get(Env.getApiUrl("auth/users/me"), {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await this._axios.get("/users/me/");
       return response.status === 200;
     } catch (error) {
       console.error("Authentication check failed:", error);
@@ -31,7 +32,7 @@ export default class AuthService extends BaseService {
     }
   }
 
-  private getExpirationDate(): Date | null {
+  private getAccessTokenExpirationDate(): Date | null {
     const isValidToken = this.isValidToken();
     if (!isValidToken) return null;
     const accessToken = localStorage.getItem("access_token");
@@ -43,7 +44,7 @@ export default class AuthService extends BaseService {
   async requestNewAccessToken(
     timeMinBeforeExpiration: number = 5
   ): Promise<void> {
-    const expirationDate = this.getExpirationDate();
+    const expirationDate = this.getAccessTokenExpirationDate();
     if (!expirationDate) {
       localStorage.removeItem("access_token");
       return; // Token is invalid or not found
@@ -73,23 +74,38 @@ export default class AuthService extends BaseService {
   async refreshToken(): Promise<void> {
     const accessToken = localStorage.getItem("access_token");
     if (!accessToken) throw new Error(ERROR_CODES.E_ACCESS_TOKEN_NOT_FOUND);
-    const response = await this._axios.post("/jwt/refresh", {
-      access: accessToken,
+    const response = await this._axios.post("/jwt/refresh/", {
+      refresh: localStorage.getItem("refresh_token"),
     });
     localStorage.setItem("access_token", response.data.access_token);
     return response.data;
   }
 
-  async register(body: UserRegistration): Promise<void> {
-    return await this._axios.post("/users", body).then(() => {});
+  async register(body: {
+    data: { type: "User"; attributes: UserRegistration };
+  }): Promise<void> {
+    const res = await this._axios
+      .post("/users/", body, {
+        headers: {
+          "Content-Type": "application/vnd.api+json",
+          Authorization: this.getAccessToken() || "",
+        },
+      })
+      .catch(() => null);
+    return res?.data ?? null;
   }
 
   async login(email: string, password: string): Promise<void> {
-    const response = await this._axios.post("/jwt/create", { email, password });
-    localStorage.setItem("access_token", response.data.access_token);
+    const response = await this._axios.post("/jwt/create/", {
+      email,
+      password,
+    });
+    localStorage.setItem("access_token", response.data.access);
+    localStorage.setItem("refresh_token", response.data.refresh);
   }
   async logout(): Promise<void> {
     localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
   }
 }
 

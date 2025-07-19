@@ -15,12 +15,13 @@ export default class BaseService {
       throw new Error("Invalid service name. Only 'gateway' is supported.");
     }
 
-    if (baseUrl && !baseUrl.startsWith("/")) baseUrl = `/${baseUrl}`;
+    if (baseUrl.startsWith("/")) baseUrl = baseUrl.substring(1);
 
     this._axios = axios.create({
       baseURL: Env.getApiUrl(baseUrl),
       headers: {
         "Content-Type": "application/json",
+        Authorization: localStorage.getItem("access_token"),
       },
     });
   }

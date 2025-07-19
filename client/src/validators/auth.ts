@@ -1,13 +1,12 @@
 import vine from "@vinejs/vine";
 
-export const registerValidator = vine.compile(
-  vine.object({
-    email: vine.string().email(),
-    password: vine.string().minLength(6),
-    first_name: vine.string().minLength(2).maxLength(50),
-    lastName: vine.string().minLength(2).maxLength(50),
-  })
-);
+export const registerValidatorObject = vine.object({
+  email: vine.string().email(),
+  password: vine.string().minLength(6),
+  first_name: vine.string().minLength(2).maxLength(50),
+  last_name: vine.string().minLength(2).maxLength(50),
+});
+export const registerValidator = vine.compile(registerValidatorObject);
 
 export const loginValidatorObject = vine.object({
   email: vine.string().email(),
