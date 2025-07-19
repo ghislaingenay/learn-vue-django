@@ -25,6 +25,7 @@ export default defineConfig({
       "@router": "/src/router",
       "@validators": "/src/validators",
       "@utils": "/src/utils",
+      "@stores": "/src/stores",
       "@modules": "/src/modules",
     },
   },
