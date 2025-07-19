@@ -13,7 +13,7 @@ const appRoutes: RouteRecordRaw[] = [
   {
     path: "/forms",
     name: routing.FORM_DASHBOARD,
-    component: import("@modules/forms/FormList.vue"),
+    component: import("@pages/forms/dashboard.vue"),
     meta: { requiresAuth: true },
     children: [],
   },

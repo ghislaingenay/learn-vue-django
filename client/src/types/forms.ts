@@ -1,14 +1,22 @@
-import type { LogTimestamp } from "./database";
-
-export interface Form extends LogTimestamp {
-  id: string;
-  title: string;
-  ownerId: string;
-  customerTitle: string;
-  description?: string;
+export enum FormTemplateStatus {
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  DELETED = "deleted",
 }
 
-export enum FormFielType {
+export interface FormTemplate {
+  id: number;
+  name: string;
+  description?: string;
+  created_at: string; // ISO date string
+  updated_at: string; // ISO date string
+  user_id: number;
+  deleted_at?: string; // ISO date string, optional
+  status: FormTemplateStatus;
+  fields: FormTemplateField[];
+}
+
+export enum FormFieldType {
   TEXT = "text",
   CHECKBOX = "checkbox",
   SELECT = "select",
@@ -17,27 +25,16 @@ export enum FormFielType {
   DATE = "date",
   NUMBER = "number",
 }
-export interface FormField {
-  id: string;
-  type: FormFielType; // e.g., "text", "checkbox", "select"
-  /** Seen by user or customer */
-  customerLabel: string;
-  /** Label used  */
-  label?: string;
-  templateId?: string; // For template fields
-  isRequired: boolean;
-  options?: string[]; // For select, radio, checkbox
-  placeholder?: string; // For text, textarea
-  defaultValue?: string; // For text, textarea, number
-  min?: number; // For number
-  max?: number; // For number
-  step?: number; // For number
-}
 
-export interface FormResponse extends Form {
-  formId: string;
-}
-
-export interface FormResponseField extends FormField {
-  formResponseId: string;
+export interface FormTemplateField {
+  id: number;
+  template: number; // Form Template ID
+  field_name: string;
+  required: boolean;
+  is_active: boolean;
+  deleted_at?: string; // ISO date string, optional
+  options: { label: string; value: string }[]; // For select, radio, checkbox
+  field_type: FormFieldType; // e.g., "text", "checkbox", "select"
+  restrictions: any;
+  default_value?: string;
 }
