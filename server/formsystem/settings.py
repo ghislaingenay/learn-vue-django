@@ -19,6 +19,8 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+APPEND_SLASH=False
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -180,4 +182,17 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',)
+}
+
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'SERIALIZERS': {
+        'user_create': 'users.serializer.UserRegistrationSerializer',
+        'current_user': 'users.serializer.CurrentUserSerializer',
+    },
+    'TOKEN_MODEL': 'rest_framework.authtoken.models.Token',
+    'TOKEN_CREATE_SERIALIZER': 'rest_framework.authtoken.serializers.AuthTokenSerializer',
+    'ACTIVATION_URL': None,  # Disable activation email
+    'SEND_ACTIVATION_EMAIL': False,  # Disable activation email
 }
