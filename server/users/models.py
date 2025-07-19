@@ -1,7 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+
+from .manager import UserManager
+
 
 # Create your models here.
-class User(models.Model):
+class User(AbstractBaseUser, PermissionsMixin):
+    username = None  # Disable username field
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
     first_name = models.CharField(max_length=30, blank=True)
@@ -10,7 +15,25 @@ class User(models.Model):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     
+    # You are seeing these errors because your custom User model inherits from PermissionsMixin, which adds groups and user_permissions fields. Django’s default auth.User model also defines these fields, causing reverse accessor clashes.
+    # Add related_name to avoid clashes
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='customuser_set',  # Changed from default 'user_set'
+        blank=True,
+        help_text='The groups this user belongs to.',
+        verbose_name='groups'
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='customuser_set',  # Changed from default 'user_set'
+        blank=True,
+        help_text='Specific permissions for this user.',
+        verbose_name='user permissions'
+    )
+
     
+    objects = UserManager()
     # def save(self, **kwargs):
     #     do_something()
     #     super().save(**kwargs)  # Call the "real" save() method.

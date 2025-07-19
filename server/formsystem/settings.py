@@ -60,7 +60,6 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'form.apps.FormConfig',
     'django_filters',
-    'rest_framework_json_api',
     'rest_framework.authtoken',
     'django_extensions',
     'corsheaders'
@@ -155,17 +154,16 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    'EXCEPTION_HANDLER': 'rest_framework_json_api.exceptions.exception_handler',
     'DEFAULT_PARSER_CLASSES': (
-        'rest_framework_json_api.parsers.JSONParser',
+        'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
     ),
 'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework_json_api.renderers.JSONRenderer',
+        'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
- 'DEFAULT_METADATA_CLASS': 'rest_framework_json_api.metadata.JSONAPIMetadata',
+ 'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata',
      'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
@@ -173,10 +171,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated'  # ✅ Fixed: Better default for API
     ],
      'DEFAULT_FILTER_BACKENDS': [
-       'rest_framework_json_api.filters.QueryParameterValidationFilter',
-        'rest_framework_json_api.filters.OrderingFilter',
-        'django_filters.rest_framework.DjangoFilterBackend',  # ✅ Fixed: Correct import
-        'rest_framework.filters.SearchFilter',  # ✅ Fixed: Use standard SearchFilter
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.OrderingFilter',
+        'rest_framework.filters.SearchFilter',
     ],
 }
 
@@ -184,12 +181,14 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',)
 }
 
+AUTH_USER_MODEL = 'users.User'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'SERIALIZERS': {
         'user_create': 'users.serializer.UserRegistrationSerializer',
         'current_user': 'users.serializer.CurrentUserSerializer',
+        'user': 'users.serializer.CurrentUserSerializer',
     },
     'TOKEN_MODEL': 'rest_framework.authtoken.models.Token',
     'TOKEN_CREATE_SERIALIZER': 'rest_framework.authtoken.serializers.AuthTokenSerializer',
