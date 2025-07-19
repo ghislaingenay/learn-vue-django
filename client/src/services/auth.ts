@@ -1,10 +1,9 @@
-import Env from "@definitions/env";
-import type { UserRegistration } from "@types";
-import axios from "axios";
+import type { User, UserRegistration } from "@types";
 import BaseService from "./base";
 import ERROR_CODES from "@constants/error_code";
 import { JWT_REGEX } from "@constants/regex";
 import { jwtDecode } from "jwt-decode";
+import { useAuthUserStore } from "@stores/auth_user";
 
 export default class AuthService extends BaseService {
   constructor() {
@@ -29,6 +28,9 @@ export default class AuthService extends BaseService {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      const userData = response.data as User;
+      const authUserStore = useAuthUserStore();
+      authUserStore.setUser(userData);
       return response.status === 200;
     } catch (error) {
       console.error("Authentication check failed:", error);
@@ -97,12 +99,18 @@ export default class AuthService extends BaseService {
       email,
       password,
     });
+
+    const authUserStore = useAuthUserStore();
+    authUserStore.setRefreshToken(response.data.refresh);
+    // authUserStore.setUser(jwtDecode<User>(response.data.access));
     localStorage.setItem("access_token", response.data.access);
     localStorage.setItem("refresh_token", response.data.refresh);
   }
   async logout(): Promise<void> {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+    const authUserStore = useAuthUserStore();
+    authUserStore.$reset();
   }
 }
 
