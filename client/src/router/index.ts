@@ -26,11 +26,14 @@ const router = createRouter({
 
 router.beforeEach(async (to, _, next) => {
   const isAuth = await authService.isAuthenticated();
+  const isLoginOrRegister = [routing.LOGIN, routing.REGISTER].includes(
+    to.name as string
+  );
   if (to.meta.requiresAuth && !isAuth) {
     next({ name: routing.LOGIN, replace: true });
-  } else {
-    next();
-  }
+  } else if (isLoginOrRegister && isAuth) {
+    next({ name: routing.FORM_DASHBOARD, replace: true });
+  } else next();
 });
 
 // router.beforeResolve(async (to) => {

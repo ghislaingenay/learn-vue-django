@@ -19,12 +19,16 @@ export default class AuthService extends BaseService {
   }
 
   async isAuthenticated(): Promise<boolean> {
-    await this.requestNewAccessToken(); // Ensure token is refreshed if needed
+    await this.requestNewAccessToken();
     const accessToken = this.getAccessToken();
     if (accessToken === null) return false;
 
     try {
-      const response = await this._axios.get("/users/me/");
+      const response = await this._axios.get("/users/me/", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       return response.status === 200;
     } catch (error) {
       console.error("Authentication check failed:", error);
@@ -43,11 +47,11 @@ export default class AuthService extends BaseService {
 
   async requestNewAccessToken(
     timeMinBeforeExpiration: number = 5
-  ): Promise<void> {
+  ): Promise<boolean> {
     const expirationDate = this.getAccessTokenExpirationDate();
     if (!expirationDate) {
       localStorage.removeItem("access_token");
-      return; // Token is invalid or not found
+      return false;
     }
 
     const currentTime = Date.now();
@@ -58,10 +62,10 @@ export default class AuthService extends BaseService {
       timeToExpiration <= 0;
     if (needsRefresh) {
       await this.refreshToken();
-      return;
+      return true;
     }
 
-    return; // Token is still valid
+    return false;
   }
 
   private isValidToken(): boolean {
@@ -77,21 +81,14 @@ export default class AuthService extends BaseService {
     const response = await this._axios.post("/jwt/refresh/", {
       refresh: localStorage.getItem("refresh_token"),
     });
-    localStorage.setItem("access_token", response.data.access_token);
+    localStorage.setItem("access_token", response.data.access);
     return response.data;
   }
 
   async register(body: {
     data: { type: "User"; attributes: UserRegistration };
   }): Promise<void> {
-    const res = await this._axios
-      .post("/users/", body, {
-        headers: {
-          "Content-Type": "application/vnd.api+json",
-          Authorization: this.getAccessToken() || "",
-        },
-      })
-      .catch(() => null);
+    const res = await this._axios.post("/users/", body).catch(() => null);
     return res?.data ?? null;
   }
 
