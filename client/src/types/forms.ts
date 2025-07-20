@@ -1,3 +1,6 @@
+import type { createEditFormTemplateValidator } from "@validators/form_template";
+import type { Infer } from "@vinejs/vine/types";
+
 export enum FormTemplateStatus {
   ACTIVE = "active",
   INACTIVE = "inactive",
@@ -38,3 +41,14 @@ export interface FormTemplateField {
   restrictions: any;
   default_value?: string;
 }
+
+export type CreateFormTemplateValues = Infer<
+  typeof createEditFormTemplateValidator
+>;
+export type UpdateFormTemplateValues = Infer<
+  typeof createEditFormTemplateValidator
+>;
+
+export type FormTemplateValues =
+  | CreateFormTemplateValues
+  | UpdateFormTemplateValues;
